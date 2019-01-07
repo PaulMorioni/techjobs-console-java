@@ -57,18 +57,19 @@ public class JobData {
     /**
      * Returns results of search the jobs data by key/value, using
      * inclusion of the search term.
-     *
+     * <p>
      * For example, searching for employer "Enterprise" will include results
      * with "Enterprise Holdings, Inc".
      *
-     * @param column   Column that should be searched.
-     * @param value Value of tech field to search for
+     * @param column Column that should be searched.
+     * @param value  Value of tech field to search for
      * @return List of all jobs matching the criteria
      */
     public static ArrayList<HashMap<String, String>> findByColumnAndValue(String column, String value) {
 
         // load data, if not already loaded
         loadData();
+        int counter = 0;
 
         ArrayList<HashMap<String, String>> jobs = new ArrayList<>();
 
@@ -76,11 +77,15 @@ public class JobData {
 
             String aValue = row.get(column);
 
-            if (aValue.contains(value)) {
+            if (aValue.toLowerCase().contains(value.toLowerCase())) {
                 jobs.add(row);
+            } else
+                counter++;
+            if (allJobs.size() == counter) {
+                System.out.println("No jobs that fit search criteria");
             }
-        }
 
+        }
         return jobs;
     }
 
@@ -126,7 +131,6 @@ public class JobData {
     }
 
 
-
     public static ArrayList<HashMap<String, String>> findByValue(String value) {
 
         // load data, if not already loaded
@@ -134,21 +138,27 @@ public class JobData {
 
         ArrayList<HashMap<String, String>> jobs = new ArrayList<>();
         HashMap<String, String> singleMapJob = new HashMap<>();
+        int counter = 0;
 
         for (int i = 0; i < allJobs.size(); i++) {
             singleMapJob = (HashMap) allJobs.get(i);
 
             for (HashMap.Entry<String, String> singleJob : singleMapJob.entrySet()) {
                 String jobValue = singleJob.getValue();
+
                 if (!jobs.contains(singleMapJob)) {
-                    if (jobValue.contains(value)) {
+                    if (jobValue.toLowerCase().contains(value.toLowerCase())) {
                         jobs.add(singleMapJob);
 
+                    } else
+                        counter++;
+                    if (allJobs.size() == counter) {
+                        System.out.println("No jobs that fit search criteria");
                     }
-                }
 
+                }
             }
         }
-                return jobs;
+        return jobs;
     }
 }
